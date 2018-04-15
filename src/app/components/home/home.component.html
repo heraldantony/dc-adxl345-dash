@@ -1,0 +1,9 @@
+<div class="container">
+  <h1 class="title">
+    {{ 'PAGES.HOME.TITLE' | translate }}
+  </h1>
+  <div style="width:100%">
+  <app-line-chart *ngIf="chartData" [data]="chartData"></app-line-chart>
+  </div>
+
+</div>
