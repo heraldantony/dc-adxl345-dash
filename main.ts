@@ -134,6 +134,42 @@ io.on("connection", function(client) {
       
     });
   });
+  client.on("fft-request", function(data) {
+    console.log(data);
+    var options = Object.assign(
+      { args: [1, 50, "test-fft.csv"] },
+      pythonShellOptions
+    );
+    PythonShell.run("adxl345-fft.py", options, (err, results) => {
+      if (err) {
+        console.log(err);
+        throw err;
+      }
+      console.log(results);
+      var values=results[0].split(",");
+      var numberOfSamples=50;
+      var startTime=0;
+      var endTime=0;
+      if(values.length >= 5) {
+        startTime=values[0];
+        endTime=values[1];
+        numberOfSamples=values[4];
+      }
+      var interval=(endTime-startTime)*1.00/numberOfSamples;
+
+     var parser = csv.parse({ delimiter: "," }, function(err, data) {
+     // csv.from.path(__dirname + "/test.csv").to.array(function (data) {
+ 
+              client.emit("fft-response", data);
+              fs.unlink(__dirname + "/test-fft.csv", function(err) {
+                if(!err) console.log("file removed");
+                else console.log(err);
+                });
+      });
+     fs.createReadStream(__dirname + "/test-fft.csv").pipe(parser);
+      
+    });
+  });
   client.on("disconnect", function() {
     console.log("disconnected ", client.id);
   });

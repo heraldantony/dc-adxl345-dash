@@ -1,0 +1,13 @@
+<div>
+ 
+
+  <div>
+    <p>
+      {{ 'Linear acceleration along the 3 axes' | translate }}
+    </p>
+    <div style="width:100%">
+      <app-acceleration-chart *ngIf="chartData" [data]="chartData"></app-acceleration-chart>
+    </div>
+
+  </div>
+</div>

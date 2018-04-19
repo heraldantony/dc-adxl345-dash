@@ -12,6 +12,8 @@ import time
 from time import sleep
 from array import *
 import datetime
+import numpy as np
+from scipy.fftpack import fft
 
 # select the correct i2c bus for this revision of Raspberry Pi
 revision = ([l[12:-1] for l in open('/proc/cpuinfo','r').readlines() if l[:8]=="Revision"]+['0000'])[0]
@@ -160,6 +162,51 @@ class ADXL345:
         #f.write(strData)
         for ad in accelDataArray:
             f.write(ad)
+        f.close() 
+        return {"startTime": s1, "endTime": s2, "durationInSecs":durationInSecs, "rateInHz": rateInHz, "numberOfSamples": numberOfSamples}
+
+    def getFFT(self, gforce = False, durationInSecs = 10, rateInHz = 1, outFile = "test.csv"):
+        numberOfSamples = durationInSecs * rateInHz
+        sleepTime = 1.0 / rateInHz   #not very accurate, needs to be adjusted
+        rateUsed = self.setBandwidthRateInHz(rateInHz)
+        rawDataArray = array('B')
+        sampleNumber = 0
+        s1 = time.time()
+        while (sampleNumber < numberOfSamples):
+            rawDataArray.fromlist(bus.read_i2c_block_data(self.address, AXES_DATA, 6))
+            sampleNumber += 1
+            sleep(sleepTime)
+        s2 = time.time()
+        accelDataXArray = []
+        accelDataYArray = []
+        accelDataZArray = []
+        sampleNumber = 0
+        actualSampleSpacing = (s2 - s1)/numberOfSamples
+        xf = np.linspace(0.0, 1.0/(2.0*actualSampleSpacing), numberOfSamples/2)
+        
+        while (sampleNumber < numberOfSamples):
+            sn6 = sampleNumber*6
+            rdArr = array('B', [rawDataArray[sn6],rawDataArray[sn6+1],rawDataArray[sn6+2],rawDataArray[sn6+3],rawDataArray[sn6+4],rawDataArray[sn6+5]]) 
+            data = self.convertBytes(rdArr.tolist(), gforce)
+            #strData="%f,%f,%f\n" % (data['x'], data['y'], data['z'])
+            accelDataXArray.append(data['x'])
+            accelDataYArray.append(data['y'])
+            accelDataZArray.append(data['z'])
+            sampleNumber += 1
+
+        
+
+        xFFTArray = 2.0/numberOfSamples * np.abs(fft(accelDataXArray)[0:numberOfSamples/2])
+        yFFTArray = 2.0/numberOfSamples * np.abs(fft(accelDataYArray)[0:numberOfSamples/2])
+        zFFTArray = 2.0/numberOfSamples * np.abs(fft(accelDataZArray)[0:numberOfSamples/2])
+        f = open(outFile, 'w')
+        #strData="%f,%f,%f,%f,%d\n" % (s1,s2,durationInSecs,rateInHz,numberOfSamples)
+        #f.write(strData)
+        fftIdx = 0
+        while fftIdx < xf.size:
+          strData="%f,%f,%f,%f\n" % (xf[fftIdx], xFFTArray[fftIdx], yFFTArray[fftIdx], zFFTArray[fftIdx])
+          f.write(strData)
+          fftIdx += 1
         f.close() 
         return {"startTime": s1, "endTime": s2, "durationInSecs":durationInSecs, "rateInHz": rateInHz, "numberOfSamples": numberOfSamples}
 

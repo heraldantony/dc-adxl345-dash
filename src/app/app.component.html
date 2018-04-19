@@ -1,1 +1,17 @@
-<router-outlet></router-outlet>
+<mdb-navbar SideClass="navbar navbar-expand-sm navbar-light bg-blue scrolling-navbar" [containerInside]="false">
+  <logo>
+    <a class="logo navbar-brand" href="#"><strong>DMM Pvt Ltd</strong></a>
+  </logo>
+  <links>
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active waves-dark"><a class="nav-link" routerLink="/acceleration">Acceleration</a></li>
+      <li class="nav-item waves-dark"><a class="nav-link" routerLink="fft">FFT</a></li>
+    </ul>
+  </links>
+</mdb-navbar>
+<main>
+  <div class="container">
+    <router-outlet></router-outlet>
+
+  </div>
+</main>

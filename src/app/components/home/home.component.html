@@ -1,12 +1,11 @@
 <div>
-  <h1>
-    {{ 'PAGES.HOME.TITLE' | translate }}
-  </h1>
+  
 
-  <div class="container">
-
+  <div>
+    <p>
+      {{ 'PAGES.HOME.TITLE' | translate }}
+    </p>
     <div style="width:100%">
-      <app-acceleration-chart *ngIf="chartData" [data]="chartData"></app-acceleration-chart>
     </div>
 
   </div>
