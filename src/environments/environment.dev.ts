@@ -5,5 +5,10 @@
 
 export const CONF_DEV = {
   production: false,
-  environment: 'DEV'
+  environment: 'DEV',
+  pythonShellOptions: {
+    mode: 'text',
+    pythonOptions: ['-u'], // get print results in real-time
+    scriptPath: './adxl345'
+  }
 };

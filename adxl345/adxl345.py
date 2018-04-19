@@ -156,12 +156,20 @@ class ADXL345:
             sampleNumber += 1
 
         f = open(outFile, 'w')
-        strData="%f,%f,%f,%f,%d\n" % (s1,s2,durationInSecs,rateInHz,numberOfSamples)
-        f.write(strData)
+        #strData="%f,%f,%f,%f,%d\n" % (s1,s2,durationInSecs,rateInHz,numberOfSamples)
+        #f.write(strData)
         for ad in accelDataArray:
             f.write(ad)
         f.close() 
         return {"startTime": s1, "endTime": s2, "durationInSecs":durationInSecs, "rateInHz": rateInHz, "numberOfSamples": numberOfSamples}
+
+    def getAccelDataDummy(self, gforce = False, durationInSecs = 10, rateInHz = 1, outFile = "test.csv"):
+          f = open(outFile, 'w')
+          strData="%f,%f,%f,%f,%d\n" % (10,20,durationInSecs,rateInHz,1000)
+          f.write(strData)
+          f.write("dummy test done")
+          f.close()
+          return {"startTime": 10, "endTime": 20, "durationInSecs":durationInSecs, "rateInHz": rateInHz, "numberOfSamples": numberOfSamples}
 
 if __name__ == "__main__":
     # if run directly we'll just create an instance of the class and output 

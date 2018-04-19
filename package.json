@@ -1,11 +1,11 @@
 {
-  "name": "angular-electron",
+  "name": "dc-adxl345-dash",
   "version": "3.3.0",
   "description": "Angular 5 with Electron (Typescript + SASS + Hot Reload)",
-  "homepage": "https://github.com/maximegris/angular-electron",
+  "homepage": "https://github.com/heraldantony/dc-adxl345-dash",
   "author": {
-    "name": "Maxime GRIS",
-    "email": "maxime.gris@gmail.com"
+    "name": "Herald Antony",
+    "email": "herald.antony@zoho.com"
   },
   "keywords": [
     "angular",
@@ -19,12 +19,15 @@
   "scripts": {
     "postinstall": "npx electron-builder install-app-deps",
     "ng": "ng",
-    "start": "node hooks/environments/set_profile.js && npm-run-all -p ng:serve electron:serve",
+    "start.old": "node hooks/environments/set_profile.js && npm-run-all -p ng:serve electron:serve",
+    "start": "node hooks/environments/set_profile.js && npm run build &&   electron .",
     "build": "node hooks/environments/set_profile.js && ng build && npm run electron:tsc",
     "build:prod": "node hooks/environments/set_profile.js && ng build --prod && npm run electron:tsc",
     "ng:serve": "ng serve -o",
     "electron:tsc": "tsc main.ts",
-    "electron:serve": "wait-on http-get://localhost:4200/ && npm run electron:tsc && electron . --serve",
+    "data:serve": "node server/server.js",
+    "electron:serve_old": "wait-on http-get://localhost:4200/ && npm run electron:tsc && electron . --serve",
+    "electron:serve": "npm run electron:tsc && electron . --serve",
     "electron:local": "npm run build:prod && electron .",
     "electron:linux": "npm run build:prod && npx electron-builder build --linux",
     "electron:windows": "npm run build:prod && npx electron-builder build --windows",
@@ -35,7 +38,11 @@
     "e2e": "npm-run-all -p -r pree2e:build pree2e:protractor"
   },
   "dependencies": {
-    "d3": "^5.0.0"
+    "csv": "^3.0.2",
+    "d3": "^5.0.0",
+    "python-shell": "^0.5.0",
+    "socket.io": "^2.1.0",
+    "socket.io-client": "^2.1.0"
   },
   "devDependencies": {
     "@angular/cli": "1.7.4",
@@ -56,6 +63,7 @@
     "@types/jasmine": "2.8.6",
     "@types/jasminewd2": "2.0.3",
     "@types/node": "7.0.7",
+    "@types/socket.io-client": "^1.4.32",
     "codelyzer": "4.2.1",
     "core-js": "2.5.5",
     "cross-env": "5.1.4",
