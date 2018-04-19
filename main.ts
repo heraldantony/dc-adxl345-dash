@@ -101,7 +101,7 @@ io.on("connection", function(client) {
       { args: [1, 50, "test.csv"] },
       pythonShellOptions
     );
-    PythonShell.run("adxl345-test.py", options, (err, results) => {
+    PythonShell.run("adxl345-gvalues.py", options, (err, results) => {
       if (err) {
         console.log(err);
         throw err;
